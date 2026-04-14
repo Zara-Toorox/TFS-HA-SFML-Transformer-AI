@@ -25,7 +25,7 @@ Toorox ForeSight HA integrates the **TFS HA G4v2 Transformer 4-Head** — a spec
 
 <img src="toorox_foresight_ha/logo.png" alt="Toorox ForeSight HA — AI Brain Extension for SFML" align="left" width="250">
 
-While traditional solar models extrapolate, the TFS G4v2 Transformer **reasons** across the entire 72-hour weather horizon at once. Trained on 360 European PV sites and 13 years of ERA5 climate normals, it sees the relationships between cloud dynamics, temperature gradients, and radiation patterns that regression-based models simply cannot encode.
+While traditional solar models extrapolate, the TFS G4v2 Transformer **reasons** across the entire 72-hour weather horizon at once. Trained on an extensive multi-year dataset of European PV installations combined with long-term climate reanalysis data, it sees the relationships between cloud dynamics, temperature gradients, and radiation patterns that regression-based models simply cannot encode.
 
 The Add-on runs entirely on your Home Assistant hardware. No cloud, no subscriptions, no data leakage — just a dedicated neural co-processor for your existing SFML ensemble, trained once on real PV physics and continuously fine-tuned on your individual roof. The pretrained model is delivered ready-to-use (AES-256 encrypted, PyArmor-protected), and fine-tunes itself on your SFML production history on first start.
 
@@ -73,9 +73,9 @@ The Add-on operates as an intelligent extension in the background of your SFML s
 | Normalization | RMSNorm + SwiGLU activation |
 | Quantiles (Uncertainty) | P10 / P50 / P90 |
 | Forecast Horizon | 72 hours |
-| Features | 47 per hour (weather, physics, ERA5 climate, temporal) |
+| Features | 47 per hour (weather, physics, climate, temporal) |
 
-The architecture was pre-trained on a curated dataset of 360 European PV installations across 13 years of ERA5 climate data — giving it a physics-grounded prior before it ever sees your roof.
+The architecture was pre-trained on a curated dataset of European PV installations combined with long-term climate reanalysis data — giving it a physics-grounded prior before it ever sees your roof.
 
 ---
 
@@ -92,13 +92,54 @@ ForeSight continuously optimizes itself to match your location:
 
 ---
 
+## ⚠️ Hardware Requirements — Read Before Installing!
+
+This Add-on performs neural-network training locally on your Home Assistant hardware. **Underpowered systems will fail or run for hours.** Please check your platform before installing:
+
+### ❌ Strongly NOT Recommended
+
+| Platform | Reason |
+|---|---|
+| **Home Assistant Green** | CPU too weak, training will not complete in reasonable time |
+| **Home Assistant Yellow** | CPU too weak, same as Green |
+| **Raspberry Pi 4 and older** | Insufficient compute & RAM, SD-card I/O bottleneck |
+| **Any SD-card installation** | Training writes extensively; SD cards will wear out quickly and I/O is far too slow |
+| **Intel CPUs older than 2016** (pre-Skylake) | Missing modern AVX instruction sets; training becomes impractically slow |
+| **Less than 6 GB RAM** | Out-of-memory during training |
+
+### ✅ Recommended Minimum
+
+- **Modern x86_64 CPU** (Intel 6th gen / 2016+, AMD Ryzen, or equivalent)
+- **At least 6 GB RAM** (8 GB recommended)
+- **SSD or NVMe storage** (no SD cards)
+- Home Assistant **2026.3.0** or newer
+- **Solar Forecast ML (SFML)** installed and configured — the Add-on reads its SQLite database to seed itself
+
+### ⏱️ Expected First-Start Duration
+
+Fine-tuning runs up to **30 epochs** on your complete SFML production history. Duration depends heavily on CPU performance:
+
+| Hardware | Approximate First-Start Duration |
+|---|---|
+| Intel Core i7 12th Gen / Ryzen 5 5600+ | **~10–15 minutes** |
+| Intel Core i5 10th–11th Gen | ~20–30 minutes |
+| Older x86_64 (2016–2018) | ~30–45 minutes |
+| Raspberry Pi 5 / 8 GB | **~40–60 minutes** (supported but slow) |
+
+> [!IMPORTANT]
+> **Do NOT interrupt the first fine-tuning run.** Stopping the Add-on mid-training will corrupt the checkpoint and require reinstallation. Let the first run complete — you only wait once.
+
+---
+
 ## 🔧 Installation
 
-### Prerequisites
+### What happens on first start
 
-- **Solar Forecast ML (SFML)** installed and configured — the Add-on reads its SQLite database to seed itself.
-- At least **8 GB RAM** recommended.
-- Home Assistant **2026.3.0** or newer.
+When you install and start the Add-on for the first time, three things happen automatically — **no configuration needed on your part**:
+
+1. **Panel configuration is imported from SFML** — location, timezone, and all panel groups (tilt, azimuth, peak power, module count) are read directly from your existing SFML database.
+2. **Sensor mapping is imported from SFML** — power, yield, temperature, humidity, radiation etc. are taken over from your SFML sensor configuration.
+3. **Initial fine-tuning** runs automatically on your full SFML production history (up to 30 epochs with early stopping). Duration depends on your hardware — see the table above.
 
 ### Installation Steps
 
@@ -109,9 +150,9 @@ ForeSight continuously optimizes itself to match your location:
    https://github.com/Zara-Toorox/TFS-HA-SFML-Transformer-AI
    ```
 4. **Toorox ForeSight** will appear in the store → **Install**.
-5. **Start** the Add-on.
+5. **Start** the Add-on — then **let it train undisturbed** until the log shows `training_complete`.
 
-> The Add-on automatically detects your SFML installation via the Home Assistant `/config/` share. No manual configuration is required. Panel groups, location, and timezone are seeded directly from the SFML configuration.
+> The Add-on detects your SFML installation via the Home Assistant `/config/` share. You do not configure anything inside the Add-on — everything is derived from SFML.
 
 ---
 
