@@ -79,6 +79,12 @@ class HourlyRecord(Base):
     sensor_radiation = Column(Float)
     sensor_lux = Column(Float)
 
+    battery_charge_kwh = Column(Float)
+    battery_discharge_kwh = Column(Float)
+    grid_export_kwh = Column(Float)
+    grid_import_kwh = Column(Float)
+    self_consumption_kwh = Column(Float)
+
     is_daytime = Column(Boolean, default=False)
     is_outlier = Column(Boolean, default=False)
     inverter_clipped = Column(Boolean, default=False)
