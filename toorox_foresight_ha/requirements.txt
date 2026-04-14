@@ -1,0 +1,14 @@
+packaging>=24.0
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+pydantic>=2.9.0
+PyYAML>=6.0
+httpx>=0.28.0
+safetensors>=0.4.0
+einops>=0.8.0
+sqlalchemy>=2.0.36
+aiosqlite>=0.20.0
+pvlib>=0.11.0
+pandas>=2.2.0
+structlog>=24.4.0
+prometheus-client>=0.21.0

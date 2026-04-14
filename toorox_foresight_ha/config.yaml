@@ -1,0 +1,24 @@
+name: Toorox ForeSight
+version: "1.0.1"
+slug: toorox_foresight_ha
+description: "ZARA Transformer (20.5M params) — neuronale Erweiterung fuer Solar Forecast ML"
+url: https://github.com/Zara-Toorox/toorox-foresight-ha
+arch:
+  - amd64
+  - aarch64
+startup: services
+boot: auto
+init: false
+hassio_api: false
+homeassistant_api: false
+auth_api: false
+ingress: false
+ports:
+  "8780/tcp": 8780
+ports_description:
+  "8780/tcp": "Forecast API"
+map:
+  - config:ro
+  - share:rw
+options: {}
+schema: {}
