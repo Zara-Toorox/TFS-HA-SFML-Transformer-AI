@@ -19,4 +19,4 @@ except ImportError:
 
 """Toorox ForeSight HA Add-on — ZARA brain extension for SFML. @zara"""
 
-__version__ = "1.2.0"
+__version__ = "1.2.2"
