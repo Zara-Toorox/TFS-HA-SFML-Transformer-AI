@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "toorox-foresight-ha"
-version = "20.2.0"
+version = "22.6.0"
 description = "Transformer-based solar forecast ensemble member for Solar Forecast ML"
 requires-python = ">=3.11"
 license = {text = "Proprietary"}

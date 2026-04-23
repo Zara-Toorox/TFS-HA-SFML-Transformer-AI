@@ -10,6 +10,16 @@ fi
 
 if [ -z "${TFS_MODEL_KEY_FILE:-}" ] && [ -z "${TFS_MODEL_KEY_B64:-}" ]; then
     DEFAULT_MODEL_KEY_FILE="${TFS_STATE_DIR}/model-key.b64"
+    if [ ! -f "${DEFAULT_MODEL_KEY_FILE}" ]; then
+        python - <<'PY' || true
+from pathlib import Path
+import os
+
+from toorox_foresight.security.model_key_bootstrap import ensure_model_key_file
+
+ensure_model_key_file(Path(os.environ["TFS_STATE_DIR"]))
+PY
+    fi
     if [ -f "${DEFAULT_MODEL_KEY_FILE}" ]; then
         export TFS_MODEL_KEY_FILE="${DEFAULT_MODEL_KEY_FILE}"
     fi
