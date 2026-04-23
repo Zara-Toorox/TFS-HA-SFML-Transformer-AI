@@ -1,12 +1,12 @@
 name: Toorox ForeSight HA
-version: "22.6.0"
+version: "20.2.0"
 slug: toorox_foresight_ha
 description: >-
   Transformer-based solar forecast side-kick for Solar Forecast ML.
   Delivers 72h P10/P50/P90 quantile forecasts per panel group,
   specialized for complex weather and shadow scenarios.
 changelog: |-
-  ## 22.6.0
+  ## 20.2.0
   - Hardened runtime bootstrap and trusted panel-group handling.
   - Improved forecast scheduling, cache behavior, and LoRA reload stability.
   - Verified SFML forecast and quantile integration path.
@@ -27,6 +27,8 @@ ports_description:
 map:
   - config:rw
 options:
+  latitude: null
+  longitude: null
   log_level: INFO
   forecast_times:
     - "00:30"
