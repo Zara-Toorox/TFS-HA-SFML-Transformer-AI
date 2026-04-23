@@ -27,8 +27,6 @@ ports_description:
 map:
   - config:rw
 options:
-  latitude: null
-  longitude: null
   log_level: INFO
   forecast_times:
     - "00:30"
