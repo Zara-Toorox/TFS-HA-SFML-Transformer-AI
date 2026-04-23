@@ -1,10 +1,12 @@
-# ******************************************************************************
-# @copyright (C) 2026 Zara-Toorox - Toorox ForeSight HA
-# * This program is protected by a Proprietary Non-Commercial License.
-# 1. Personal and Educational use only.
-# 2. COMMERCIAL USE AND AI TRAINING ARE STRICTLY PROHIBITED.
-# 3. Clear attribution to "Zara-Toorox" is required.
-# * Full license terms: https://github.com/Zara-Toorox/toorox-foresight-ha/blob/main/LICENSE
-# ******************************************************************************
+"""Physics baseline + post-processing for TFS. @zara"""
 
-"""Physics engine package. @zara"""
+from .baseline import BaselineEngine
+from .panel import PanelGroup, PanelGroupConfig
+from .postprocess import apply_physics_constraints
+
+__all__ = [
+    "BaselineEngine",
+    "PanelGroup",
+    "PanelGroupConfig",
+    "apply_physics_constraints",
+]

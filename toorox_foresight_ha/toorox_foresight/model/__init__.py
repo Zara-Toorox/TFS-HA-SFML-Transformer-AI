@@ -1,30 +1,30 @@
-# ******************************************************************************
-# @copyright (C) 2026 Zara-Toorox - Toorox ForeSight HA
-# * This program is protected by a Proprietary Non-Commercial License.
-# 1. Personal and Educational use only.
-# 2. COMMERCIAL USE AND AI TRAINING ARE STRICTLY PROHIBITED.
-# 3. Clear attribution to "Zara-Toorox" is required.
-# * Full license terms: https://github.com/Zara-Toorox/toorox-foresight-ha/blob/main/LICENSE
-# ******************************************************************************
+"""Transformer model, components, quantile head, losses. @zara"""
 
-"""ZARA Transformer model package. @zara"""
-
-from toorox_foresight.model.transformer import ZaraTransformer
-from toorox_foresight.model.components import (
-    RMSNorm,
-    SwiGLU,
-    RevIN,
-    RotaryPositionalEmbedding,
+from .components import (
+    ConditionalLayerNorm,
+    FiLMGenerator,
     MultiHeadAttention,
-    MixtureOfExperts,
+    PatchEmbedding,
+    RMSNorm,
+    RotaryPositionalEmbedding,
+    SwiGLU,
+    VariateEmbedding,
 )
+from .losses import ForeSightLoss, QuantileLoss
+from .quantile_head import MonotonicQuantileHead
+from .transformer import ZaraPhoenixTransformer
 
 __all__ = [
-    "ZaraTransformer",
-    "RMSNorm",
-    "SwiGLU",
-    "RevIN",
-    "RotaryPositionalEmbedding",
+    "ConditionalLayerNorm",
+    "FiLMGenerator",
+    "ForeSightLoss",
+    "MonotonicQuantileHead",
     "MultiHeadAttention",
-    "MixtureOfExperts",
+    "PatchEmbedding",
+    "QuantileLoss",
+    "RMSNorm",
+    "RotaryPositionalEmbedding",
+    "SwiGLU",
+    "VariateEmbedding",
+    "ZaraPhoenixTransformer",
 ]

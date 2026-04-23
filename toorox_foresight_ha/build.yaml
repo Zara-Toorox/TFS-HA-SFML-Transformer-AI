@@ -2,7 +2,7 @@ build_from:
   amd64: ghcr.io/home-assistant/amd64-base-debian:bookworm
   aarch64: ghcr.io/home-assistant/aarch64-base-debian:bookworm
 labels:
-  org.opencontainers.image.title: Toorox ForeSight HA
-  org.opencontainers.image.description: ZARA brain extension for Solar Forecast ML
-  org.opencontainers.image.source: https://github.com/Zara-Toorox/12_TFS_HA
-  org.opencontainers.image.licenses: MIT
+  org.opencontainers.image.title: "Toorox ForeSight HA"
+  org.opencontainers.image.description: "Transformer-based 72h solar forecast ensemble member"
+  org.opencontainers.image.source: "https://github.com/Zara-Toorox/TFS-HA-SFML-Transformer-AI"
+  org.opencontainers.image.licenses: "Proprietary"

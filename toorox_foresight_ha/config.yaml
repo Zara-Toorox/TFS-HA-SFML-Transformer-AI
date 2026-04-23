@@ -1,24 +1,45 @@
-name: Toorox ForeSight
-version: "1.2.3"
+name: Toorox ForeSight HA
+version: "20.2.0"
 slug: toorox_foresight_ha
-description: "ZARA Transformer (20.5M params) — neuronale Erweiterung fuer Solar Forecast ML"
-url: https://github.com/Zara-Toorox/toorox-foresight-ha
+description: >-
+  Transformer-based solar forecast side-kick for Solar Forecast ML.
+  Delivers 72h P10/P50/P90 quantile forecasts per panel group,
+  specialized for complex weather and shadow scenarios.
+changelog: |-
+  ## 20.2.0
+  - Hardened runtime bootstrap and trusted panel-group handling.
+  - Improved forecast scheduling, cache behavior, and LoRA reload stability.
+  - Verified SFML forecast and quantile integration path.
+  - Added protected release structure with staging-based builds.
+  - Added encrypted base-model packaging for protected release builds.
+url: "https://github.com/Zara-Toorox/TFS-HA-SFML-Transformer-AI"
 arch:
   - amd64
   - aarch64
 startup: services
 boot: auto
 init: false
-hassio_api: false
-homeassistant_api: false
-auth_api: false
-ingress: false
+host_network: false
 ports:
-  "8780/tcp": 8780
+  8780/tcp: 8780
 ports_description:
-  "8780/tcp": "Forecast API"
+  8780/tcp: Forecast API (SFML consumer + Stats UI)
 map:
-  - config:ro
-  - share:rw
-options: {}
-schema: {}
+  - config:rw
+options:
+  latitude: null
+  longitude: null
+  log_level: INFO
+  forecast_times:
+    - "00:30"
+    - "sunrise-45"
+  finetune_time: "23:30"
+  auto_finetune: true
+schema:
+  latitude: float?
+  longitude: float?
+  log_level: list(DEBUG|INFO|WARNING|ERROR)
+  forecast_times:
+    - str
+  finetune_time: str
+  auto_finetune: bool

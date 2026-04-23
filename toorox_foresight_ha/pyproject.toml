@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "toorox-foresight-ha"
+version = "20.2.0"
+description = "Transformer-based solar forecast ensemble member for Solar Forecast ML"
+requires-python = ">=3.11"
+license = {text = "Proprietary"}
+authors = [
+    {name = "Zara-Toorox"},
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["toorox_foresight*"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM"]
+ignore = ["E501"]

@@ -1,7 +1,7 @@
-<h1 align="center">Toorox ForeSight HA — TFS G4v2</h1>
+<h1 align="center">Toorox ForeSight HA — Phoenix V2</h1>
 
 <p align="center">
-  <strong>The Neural Brain Extension for Solar Forecast ML (SFML) — 20.5M Parameter Transformer, 100% Local, 100% Private</strong>
+  <strong>The transformer-based forecast extension for the Solar Forecast ML Hubble AI Stack — 100% local, 100% private</strong>
 </p>
 
 <p align="center">
@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/badge/platform-amd64%20%7C%20aarch64-lightgrey.svg" alt="Platform">
 </p>
 
-Toorox ForeSight HA integrates the **TFS HA G4v2 Transformer 4-Head** — a specialized neural network with **20.5 million parameters** — as an optional brain extension for your existing Solar Forecast ML (SFML) installation. It acts as a third expert opinion within the SFML ensemble, refining forecast quality during volatile weather and seasonal transitions by capturing complex atmospheric patterns beyond conventional regression.
+Toorox ForeSight HA integrates the **Phoenix V2 pretrained 4-head Transformer AI** as an operational forecast extension for your existing Solar Forecast ML (SFML) installation. It contributes an additional transformer-based forecast signal inside the SFML ensemble and is designed to improve forecast quality in complex weather conditions without operating as a standalone forecast service.
 
 **Fuel my late-night ideas with a coffee? I'd really appreciate it — keep this project running!**
 
