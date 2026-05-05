@@ -216,9 +216,12 @@ class ForecastScheduler:
                 logger.warning("finetune_skip_runner_missing")
                 self._state.refinetune_status = "no_runner"
                 return
-            await runner(force=force)
-            self._state.refinetune_status = "completed"
-            self._state.last_refinetune_at = datetime.now(timezone.utc)
+            result = await runner(force=force)
+            status = result.get("status", "completed") if isinstance(result, dict) else "completed"
+            self._state.refinetune_status = status
+            correction = result.get("correction", {}) if isinstance(result, dict) else {}
+            if correction.get("status") == "success":
+                self._state.last_refinetune_at = datetime.now(timezone.utc)
         except Exception as exc:
             logger.error("finetune_failed", error=str(exc), exc_info=True)
             self._state.refinetune_status = "failed"

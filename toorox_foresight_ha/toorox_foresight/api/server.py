@@ -191,6 +191,7 @@ async def _bootstrap(app: FastAPI) -> AppState:
         astronomy=state.astronomy,
         lora_loader=state.lora_loader,
         base_checkpoint=base_ckpt,
+        state_db=state.state_db,
         engine=state.engine,
     )
 
