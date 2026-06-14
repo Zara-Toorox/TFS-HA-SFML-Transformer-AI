@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "toorox-foresight-ha"
-version = "26.0.0"
+version = "28.0.0"
 description = "Transformer-based solar forecast ensemble member for Solar Forecast ML"
 requires-python = ">=3.11"
 license = {text = "Proprietary"}
@@ -23,3 +23,6 @@ target-version = "py314"
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM"]
 ignore = ["E501"]
+
+[tool.pytest.ini_options]
+addopts = "--import-mode=importlib"

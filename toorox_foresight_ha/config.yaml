@@ -1,11 +1,17 @@
 name: Toorox ForeSight HA
-version: "26.0.0"
+version: "28.0.0"
 slug: toorox_foresight_ha
 description: >-
   Transformer-based solar forecast side-kick for Solar Forecast ML.
   Delivers 72h P10/P50/P90 quantile forecasts per panel group,
   specialized for complex weather and shadow scenarios.
 changelog: |-
+  ## 28.0.0
+  - Optimized calibration loss training via differentiable sigmoid function.
+  - Harmonized temporal features capacity scaling between training and inference.
+  - Overworked weather forecast padding to prevent timestamp freezing.
+  - Implemented LoRA promotion validation checks to prevent performance regression.
+  - Configured pytest with importlib import mode to run tests against originale source.
   ## 26.0.0
   - Hardened runtime bootstrap and trusted panel-group handling.
   - Improved forecast scheduling, cache behavior, and LoRA reload stability.
