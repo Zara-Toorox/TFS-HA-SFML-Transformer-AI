@@ -3,6 +3,7 @@ ARG APP_SOURCE_ROOT=.
 
 FROM python:3.12-slim-bookworm AS python-stage
 
+ARG APP_SOURCE_ROOT=.
 FROM $BUILD_FROM
 
 ENV LANG=C.UTF-8 \
