@@ -5,6 +5,7 @@ FROM python:3.12-slim-bookworm AS python-stage
 
 ARG APP_SOURCE_ROOT=.
 FROM $BUILD_FROM
+ARG APP_SOURCE_ROOT=.
 
 ENV LANG=C.UTF-8 \
     PYTHONUNBUFFERED=1 \
