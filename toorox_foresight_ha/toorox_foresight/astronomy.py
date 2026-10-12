@@ -8,13 +8,27 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from datetime import date, datetime, time, timedelta, timezone
+from datetime import UTC, date, datetime, time, timedelta, timezone
 from functools import lru_cache
 from zoneinfo import ZoneInfo
 
 import pandas as pd
 import pvlib
 from pvlib.location import Location
+
+
+def hour_label_sample_utc(when_utc: datetime) -> datetime:
+    """Sample sun and clear-sky at h:30 for an hour label that falls on the hour.
+
+    A timestamp already off the hour, including an existing :30, is unchanged,
+    so a second call does not walk the sample forward.
+    """
+    when_utc = (
+        when_utc.replace(tzinfo=UTC) if when_utc.tzinfo is None else when_utc.astimezone(UTC)
+    )
+    if when_utc.minute == 0 and when_utc.second == 0 and when_utc.microsecond == 0:
+        return when_utc + timedelta(minutes=30)
+    return when_utc
 
 
 @dataclass(frozen=True)
@@ -152,10 +166,8 @@ class AstronomyEngine:
         )
 
     def hourly(self, when_utc: datetime) -> HourlyAstronomy:
-        """Sun position + clear-sky for one UTC timestamp. @zara"""
-        if when_utc.tzinfo is None:
-            when_utc = when_utc.replace(tzinfo=timezone.utc)
-        times = pd.DatetimeIndex([when_utc])
+        """Sun position + clear-sky for the hour labelled by when_utc, sampled at h:30. @zara"""
+        times = pd.DatetimeIndex([hour_label_sample_utc(when_utc)])
         solpos = self._loc.get_solarposition(times)
         clearsky = self._loc.get_clearsky(times, model="ineichen")
 
@@ -177,11 +189,12 @@ class AstronomyEngine:
         start_utc: datetime,
         hours: int,
     ) -> list[HourlyAstronomy]:
-        """Sun position + clear-sky for a range of hours. @zara"""
+        """Sun position + clear-sky for a range of hours, each sampled at h:30. @zara"""
         if start_utc.tzinfo is None:
-            start_utc = start_utc.replace(tzinfo=timezone.utc)
+            start_utc = start_utc.replace(tzinfo=UTC)
+        start_utc = start_utc.astimezone(UTC).replace(minute=0, second=0, microsecond=0)
         times = pd.DatetimeIndex(
-            [start_utc + timedelta(hours=h) for h in range(hours)]
+            [hour_label_sample_utc(start_utc + timedelta(hours=h)) for h in range(hours)]
         )
         solpos = self._loc.get_solarposition(times)
         clearsky = self._loc.get_clearsky(times, model="ineichen")

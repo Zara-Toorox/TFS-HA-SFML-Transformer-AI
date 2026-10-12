@@ -8,6 +8,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from ..radiation_time import (
+    RADIATION_HOUR_BASIS_INTERVAL_START,
+    RADIATION_HOUR_BASIS_META_KEY,
+    STALE_RADIATION_WEIGHT_VARIABLES,
+)
+
 
 @dataclass(frozen=True)
 class Migration:
@@ -105,6 +111,27 @@ MIGRATIONS: tuple[Migration, ...] = (
             )""",
             """CREATE INDEX IF NOT EXISTS idx_tfs_weather_cache_date_hour
                 ON tfs_weather_cache(forecast_date, hour)""",
+        ),
+    ),
+    Migration(
+        version=2,
+        description=(
+            "Radiation interval-start contract. Drop blender weights learned "
+            "against hour-ending GHI. Do not rewrite forecast hours."
+        ),
+        statements=(
+            "DELETE FROM tfs_weather_blender_weights WHERE variable IN ("
+            + ", ".join(f"'{name}'" for name in STALE_RADIATION_WEIGHT_VARIABLES)
+            + ")",
+            f"""INSERT INTO tfs_meta (key, value, updated_at)
+               VALUES (
+                   '{RADIATION_HOUR_BASIS_META_KEY}',
+                   '{RADIATION_HOUR_BASIS_INTERVAL_START}',
+                   strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+               )
+               ON CONFLICT(key) DO UPDATE SET
+                   value = excluded.value,
+                   updated_at = excluded.updated_at""",
         ),
     ),
 )

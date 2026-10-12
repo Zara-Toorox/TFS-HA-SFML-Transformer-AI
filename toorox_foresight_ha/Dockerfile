@@ -1,6 +1,4 @@
 ARG BUILD_FROM
-ARG APP_SOURCE_ROOT=.
-
 FROM python:3.12-slim-bookworm AS python-stage
 
 FROM $BUILD_FROM
@@ -41,17 +39,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-COPY ${APP_SOURCE_ROOT}/requirements.txt /app/requirements.txt
+COPY ./requirements.txt /app/requirements.txt
 
 RUN pip3 install --break-system-packages \
         --extra-index-url https://download.pytorch.org/whl/cpu \
         -r /app/requirements.txt
 
-COPY ${APP_SOURCE_ROOT}/toorox_foresight /app/toorox_foresight
-COPY ${APP_SOURCE_ROOT}/scripts /app/scripts
-COPY ${APP_SOURCE_ROOT}/models /app/models
-COPY ${APP_SOURCE_ROOT}/run.sh /app/run.sh
-COPY ${APP_SOURCE_ROOT}/pyarmor_runtime_009810 /app/pyarmor_runtime_009810
+COPY ./toorox_foresight /app/toorox_foresight
+COPY ./scripts /app/scripts
+COPY ./models /app/models
+COPY ./run.sh /app/run.sh
+COPY ./pyarmor_runtime_009810 /app/pyarmor_runtime_009810
 RUN chmod +x /app/run.sh
 
 EXPOSE 8780

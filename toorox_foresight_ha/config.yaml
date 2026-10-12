@@ -1,11 +1,16 @@
 name: Toorox ForeSight HA
-version: "28.0.0"
+version: "29.0.0"
 slug: toorox_foresight_ha
 description: >-
   Transformer-based solar forecast side-kick for Solar Forecast ML.
   Delivers 72h P10/P50/P90 quantile forecasts per panel group,
   specialized for complex weather and shadow scenarios.
 changelog: |-
+  ## 29.0.0
+  - Aligned provider radiation to the interval-start hour convention used by Solar Forecast ML; the forecast curve was one hour late.
+  - Sun position and clear-sky are now sampled at mid-hour.
+  - One-time reset of learned radiation blender weights (migration v2).
+  - Bright Sky temperature and pressure are converted from Kelvin and Pascal; the blend mixed them with °C and hPa and pulled the forecast down by about a fifth.
   ## 28.0.0
   - Optimized calibration loss training via differentiable sigmoid function.
   - Harmonized temporal features capacity scaling between training and inference.
