@@ -14,6 +14,21 @@ from ..radiation_time import (
     STALE_RADIATION_WEIGHT_VARIABLES,
 )
 
+# served_weather_v1: post-blend WeatherPoint fields read by
+# ForecastEngine._build_weather_tensor, before 0..1 normalization.
+# temperature_c °C; humidity_percent %; pressure_hpa hPa;
+# cloud_cover_* %; precipitation_mm mm; ghi/dni/dhi W/m² as blended
+# (dni is Open-Meteo horizontal direct_radiation when that value exists);
+# wind_speed_ms, snowfall_mm and snow_depth_cm keep today's unconverted
+# blend (Open-Meteo wind defaults to km/h, snowfall is cm, snow_depth is m);
+# visibility_m m; sun_elevation_deg mid-hour degrees.
+# lead_hours = target_utc - generated_at. baseline_kwh is the per-group
+# kWh already multiplied into the forecast.
+SERVED_WEATHER_CONTRACT = "served_weather_v1"
+SERVED_WEATHER_META_KEY = "served_weather_contract"
+SERVED_WEATHER_RETENTION_DAYS = 120
+SERVED_WEATHER_RETENTION_BATCH = 24
+
 
 @dataclass(frozen=True)
 class Migration:
@@ -127,6 +142,68 @@ MIGRATIONS: tuple[Migration, ...] = (
                VALUES (
                    '{RADIATION_HOUR_BASIS_META_KEY}',
                    '{RADIATION_HOUR_BASIS_INTERVAL_START}',
+                   strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
+               )
+               ON CONFLICT(key) DO UPDATE SET
+                   value = excluded.value,
+                   updated_at = excluded.updated_at""",
+        ),
+    ),
+    Migration(
+        version=3,
+        description=(
+            "Persist served weather and per-group baseline. "
+            "Drop the unused weather cache."
+        ),
+        statements=(
+            """CREATE TABLE IF NOT EXISTS tfs_served_weather (
+                forecast_id TEXT NOT NULL,
+                target_utc TEXT NOT NULL,
+                lead_hours REAL NOT NULL,
+                contract TEXT NOT NULL,
+                temperature_c REAL NOT NULL,
+                humidity_percent REAL NOT NULL,
+                pressure_hpa REAL NOT NULL,
+                cloud_cover_percent REAL NOT NULL,
+                cloud_cover_low_percent REAL,
+                cloud_cover_mid_percent REAL,
+                cloud_cover_high_percent REAL,
+                wind_speed_ms REAL NOT NULL,
+                precipitation_mm REAL NOT NULL,
+                snowfall_mm REAL NOT NULL,
+                ghi_wm2 REAL NOT NULL,
+                dni_wm2 REAL NOT NULL,
+                dhi_wm2 REAL NOT NULL,
+                visibility_m REAL,
+                snow_depth_cm REAL,
+                cloud_type TEXT NOT NULL,
+                weather_code INTEGER,
+                sun_elevation_deg REAL NOT NULL,
+                PRIMARY KEY (forecast_id, target_utc),
+                FOREIGN KEY (forecast_id)
+                    REFERENCES tfs_forecast_run(forecast_id) ON DELETE CASCADE
+            )""",
+            """CREATE INDEX IF NOT EXISTS idx_tfs_served_weather_target
+                ON tfs_served_weather(target_utc)""",
+            """CREATE TABLE IF NOT EXISTS tfs_served_baseline (
+                forecast_id TEXT NOT NULL,
+                target_utc TEXT NOT NULL,
+                group_name TEXT NOT NULL,
+                baseline_kwh REAL NOT NULL,
+                PRIMARY KEY (forecast_id, target_utc, group_name),
+                FOREIGN KEY (forecast_id)
+                    REFERENCES tfs_forecast_run(forecast_id) ON DELETE CASCADE
+            )""",
+            """CREATE INDEX IF NOT EXISTS idx_tfs_served_baseline_target
+                ON tfs_served_baseline(target_utc)""",
+            """CREATE INDEX IF NOT EXISTS idx_tfs_forecast_run_generated
+                ON tfs_forecast_run(generated_at)""",
+            "DROP INDEX IF EXISTS idx_tfs_weather_cache_date_hour",
+            "DROP TABLE IF EXISTS tfs_weather_cache",
+            f"""INSERT INTO tfs_meta (key, value, updated_at)
+               VALUES (
+                   '{SERVED_WEATHER_META_KEY}',
+                   '{SERVED_WEATHER_CONTRACT}',
                    strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
                )
                ON CONFLICT(key) DO UPDATE SET
