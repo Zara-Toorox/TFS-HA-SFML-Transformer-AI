@@ -180,6 +180,33 @@ Relevant runtime paths:
 Release builds use the protected staging path and ship encrypted base-model
 artifacts for runtime loading.
 
+## Docker
+
+Minimal example of a compose.yaml file for running in a docker-container:
+```yaml
+services:
+  toorox-foresight:
+    container_name: toorox-foresight
+    build: 
+      context: https://github.com/Zara-Toorox/TFS-HA-SFML-Transformer-AI.git
+      dockerfile: toorox_foresight_ha/Dockerfile
+      args:
+        BUILD_FROM: "ubuntu:24.04"  # or 22.04
+        APP_SOURCE_ROOT: ./toorox_foresight_ha
+    restart: unless-stopped
+    ports:
+      - "8780:8780"
+    volumes:
+      - ./<full or relaive path to homeassit config>:/config
+    environment:
+      - TZ=Europe/Berlin
+      - TFS_TIMEZONE_STR=Europe/Berlin
+      - TFS_LATITUDE=53.0  # enter your latitde
+      - TFS_LONGITUDE=12.0  # enter your longitude
+      - TFS_STATE_DIR=/config/toorox_foresight_ha
+```
+With a compose.yaml file like this, docker handles automatically the pulling of the rpository and the building of the container.
+
 ## License
 
 Proprietary. © 2026 Zara-Toorox.
